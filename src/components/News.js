@@ -9,27 +9,28 @@ export default function News(props) {
     return str[0].toUpperCase() + str.slice(1);
   };
 
-  let totalResults = 0;
-
   const [articles, setArticles] = useState([]);
-  // const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(null);
   const [page, setPage] = useState(0);
+  const [totalResults, setTotalResults] = useState(0);
 
   const updateNews = async () => {
+    setLoading(true);
     props.setProgress(25);
-    const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apikey=${props.apiKey}&page=` + page + 1;
+    const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apikey=${props.apiKey}&page=` + (page + 1);
     const response = await fetch(url);
     const result = await response.json();
     setArticles(articles.concat(result.articles));
-    totalResults = result.totalResults;
+    setTotalResults(result.totalResults);
     props.setProgress(100);
-    // setLoading(false);
+    setLoading(false);
     setPage(page + 1);
   };
 
   useEffect(() => {
     document.title = `${captitalize(props.category) + " - NewsOverflow"}`;
     updateNews();
+    // eslint-disable-next-line
   }, []);
 
   let counter = 0;
@@ -39,22 +40,23 @@ export default function News(props) {
       <h1 className="text-center text-primary" style={{ marginTop: "70px" }}>
         NewsOverflow - <small>Top {captitalize(props.category)} Headlines</small>
       </h1>
-      {/* {loading && <Spinner />} */}
+      {loading && <Spinner />}
       <InfiniteScroll dataLength={articles.length} next={updateNews} hasMore={articles.length !== totalResults} loader={<Spinner />}>
         <div className="row">
-          {articles.map((item) => {
-            return (
-              <div className="col-md-4 my-3" key={counter++}>
-                <NewsItem
-                  title={item && item.title ? item.title.slice(0, 45) : ""}
-                  description={item && item.description ? item.description.slice(0, 128) : ""}
-                  imageUrl={item && item.urlToImage ? item.urlToImage : ""}
-                  url={item && item.url ? item.url : ""}
-                  published={item ? new Date(item.publishedAt).toUTCString() : ""}
-                />
-              </div>
-            );
-          })}
+          {articles &&
+            articles.map((item) => {
+              return (
+                <div className="col-md-4 my-3" key={counter++}>
+                  <NewsItem
+                    title={item && item.title ? item.title.slice(0, 45) : ""}
+                    description={item && item.description ? item.description.slice(0, 128) : ""}
+                    imageUrl={item && item.urlToImage ? item.urlToImage : ""}
+                    url={item && item.url ? item.url : ""}
+                    published={item ? new Date(item.publishedAt).toUTCString() : ""}
+                  />
+                </div>
+              );
+            })}
         </div>
       </InfiniteScroll>
     </div>
