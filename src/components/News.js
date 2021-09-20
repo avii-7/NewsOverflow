@@ -35,7 +35,7 @@ export default function News(props) {
 
   return (
     <div className="container">
-      <h1 className="text-center text-primary py-2" style={{ marginTop: "70px" }}>
+      <h1 className="text-center text-primary py-4" style={{ marginTop: "70px" }}>
         NewsOverflow - <small>Top {captitalize(props.category)} Headlines</small>
       </h1>
       {loading && <Spinner />}
