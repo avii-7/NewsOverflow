@@ -13,10 +13,9 @@ export default function App() {
   };
 
   return (
-    <>
       <Router>
         <Navbar />
-        <LoadingBar height={3} color="#f11946" progress={progress} onLoaderFinished={() => setProgress(0)} />
+        <LoadingBar height={3} color="#f11946" progress={progress} onLoaderFinished={() => { setProgress(0); } } />
         <Switch>
           <Route exact path="/">
             <News setProgress={updateProgress} key="general" apiKey={apiKey} country="in" category="general" />
@@ -35,6 +34,5 @@ export default function App() {
           </Route>
         </Switch>
       </Router>
-    </>
   );
 }
